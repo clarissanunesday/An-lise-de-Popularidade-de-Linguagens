@@ -1,0 +1,53 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+# Carregar o arquivo CSV
+df = pd.read_csv('trend_over_time.csv', parse_dates=['Week'], dayfirst=True)
+df.set_index('Week', inplace=True)
+df.sort_index(inplace=True)
+
+# Visualizar a evolução da popularidade ao longo do tempo
+plt.figure(figsize=(14, 7))
+plt.plot(df.index, df['Python'], label='Python', color='blue')
+plt.plot(df.index, df['Java'], label='Java', color='green')
+plt.plot(df.index, df['C++'], label='C++', color='red')
+plt.xlabel('Data')
+plt.ylabel('Popularidade')
+plt.title('Evolução da Popularidade das Linguagens de Programação')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Aplicar médias móveis para suavizar as séries temporais
+df['Python_MA30'] = df['Python'].rolling(window=4).mean()  # Ajustado para menos dados
+df['Java_MA30'] = df['Java'].rolling(window=4).mean()  # Ajustado para menos dados
+df['C++_MA30'] = df['C++'].rolling(window=4).mean()  # Ajustado para menos dados
+
+plt.figure(figsize=(14, 7))
+plt.plot(df.index, df['Python'], label='Python', color='blue', alpha=0.5)
+plt.plot(df.index, df['Python_MA30'], label='Python MA4', color='blue', linestyle='--')
+plt.plot(df.index, df['Java'], label='Java', color='green', alpha=0.5)
+plt.plot(df.index, df['Java_MA30'], label='Java MA4', color='green', linestyle='--')
+plt.plot(df.index, df['C++'], label='C++', color='red', alpha=0.5)
+plt.plot(df.index, df['C++_MA30'], label='C++ MA4', color='red', linestyle='--')
+plt.xlabel('Data')
+plt.ylabel('Popularidade')
+plt.title('Popularidade das Linguagens com Médias Móveis de 4 Semanas')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Decompor as séries temporais para identificar componentes sazonais e tendências
+# Ajustando a periodicidade para um valor menor
+def plot_decomposition(series, title, period):
+    decomposition = seasonal_decompose(series, model='additive', period=period)
+    fig = decomposition.plot()
+    fig.set_size_inches(14, 10)
+    plt.suptitle(title, fontsize=16)
+    plt.show()
+
+# Usando uma periodicidade de 4 semanas para ajuste devido ao número limitado de observações
+plot_decomposition(df['Python'], 'Decomposição da Popularidade do Python', period=4)
+plot_decomposition(df['Java'], 'Decomposição da Popularidade do Java', period=4)
+plot_decomposition(df['C++'], 'Decomposição da Popularidade do C++', period=4)
