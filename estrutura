@@ -1,0 +1,15 @@
+/project-root
+│
+├── data
+│   └── trend_over_time.csv
+│
+├── notebooks
+│   └── análise_temporal.ipynb
+│
+├── scripts
+│   └── análise_temporal.py
+│
+├── reports
+│   └── relatório.md
+│
+└── README.md
